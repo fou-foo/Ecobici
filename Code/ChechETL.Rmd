@@ -1,0 +1,28 @@
+---
+title: "Test ETL econbici"
+author: "J. Antonio García Ramirez"
+date: "November 24, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+```
+
+# Veamos que tan homogeneos son los datos
+
+```{r }
+library(readr)
+local <- '~/Desktop/Ecobici/Data/'
+lista <- dir(local)
+for (i in lista)
+{
+    data <- read_csv(file=paste0(local,i), n_max = 10)
+    print(head(data, 5))
+    print(i)
+    print('')
+    print('')
+
+}
+
+```
