@@ -8,7 +8,7 @@ library(shinydashboard)
 library(shiny)
 library(plotly)
 library(knitr)
-library(rmarkdown) 
+library(rmarkdown)
 library(leaflet)
 library(shinyLP)
 library(gapminder)
@@ -17,7 +17,7 @@ library(shiny)
 
 theme_set(theme_bw())
 #########################################
-# Construccion de la UI                 # 
+# Construccion de la UI                 #
 #########################################
 sidebar <- dashboardSidebar(
   #comenzamos con el menu
@@ -34,7 +34,7 @@ sidebar <- dashboardSidebar(
 body <- dashboardBody(
   tabItems(
     tabItem(tabName = "ECOBICI",
-            img(src='ecobicilogo.png', align = "left"), hr(), hr(), hr(), hr(), hr(), hr(), 
+            img(src='ecobicilogo.png', align = "left"), hr(), hr(), hr(), hr(), hr(), hr(),
             box(   width=8,leafletOutput("mymap"))
     ),
     tabItem(tabName = "Data",
@@ -42,32 +42,33 @@ body <- dashboardBody(
             ),
             box(   width=12,  plotlyOutput("DelimitacionTiempo", height = 500, width = "100%")
             )  ),
-    
+
     tabItem(tabName = "EDA",
             box(   width=12,  plotlyOutput("genero", height = 500, width = "100%")
             ),
             box(   width=12,  plotlyOutput("hora", height = 500, width = "100%")
             )
     ),    #la tab de la derivacion
-     tabItem(tabName = "Kriging",  
+     tabItem(tabName = "Kriging",
              img(src='eda.png', align = "center"), hr(),hr(),hr(),hr(),hr(),hr(),
              img(src='kriging.png', align = "center")
              ),
-    tabItem(tabName = "coKriging",  
+    tabItem(tabName = "coKriging",
             img(src='cokriging.png', align = "center")
     ),
     tabItem(tabName = "CTemporal",
-            box(   width=12,  plotlyOutput("Cluster_temporal", height = 500, width = "100%"),
-                   hr(),  imageOutput("plot1")))
-           
-    
-            
+            box(   width=12,  plotlyOutput("Cluster_temporal", height = 500, width = "100%")#,
+                  # hr(),  imageOutput("plot1"))
+                  ))
+
+
+
     )
-                      
+
   )
 
 # Put them together into a dashboardPage
-dashboardPage(skin = "green", 
+dashboardPage(skin = "green",
   dashboardHeader(title = "CIMAT Monterrey"),
   sidebar,
   body

@@ -8,7 +8,7 @@ library(plotly)
 library(MASS)
 library(shiny)
 library(knitr)
-library(rmarkdown) 
+library(rmarkdown)
 library(ggplot2)
 library(lubridate)
 library(leaflet)
@@ -19,7 +19,7 @@ library(shiny)
 
 theme_set(theme_bw())
 #########################################
-# Construccion del backend              # 
+# Construccion del backend              #
 #########################################
 #lectura de datos simulados previamente
 n <- 20
@@ -29,12 +29,12 @@ load('DelimitacionTiempo.Rdata')
 load('genero.Rdata')
 load('hora.Rdata')
 load('Cluster_temporal.Rdata')
-load( file='xx.Rdata')
+load( file='mapa.Rdata')
 library(plotly)
 Cluster_temporal
 ####################################
 server <- function(input, output) {
- 
+
   #seleccion de datos simulados
   a <- reactive({
     d <- input$d #seleccion de datos
@@ -50,7 +50,7 @@ server <- function(input, output) {
     X <- X/sum(X**2)**.5 #normalizamos el vector que define al frontera de Bayes
     #acos(sum(X*w))*360/(2*pi)
     stack$label <- 1
-    stack$label[(n+1):(2*n)] <- -1 
+    stack$label[(n+1):(2*n)] <- -1
     Y <- X
     Y[-c(1,2)] <- 0
     Y[1] <- X[2]
@@ -69,23 +69,13 @@ server <- function(input, output) {
     b <- list(proyec, w )
     return(b)
   })
-  
+
   # mapa
   output$mymap <- renderLeaflet({
-    #names(xx)
-    xx$stations.location <-NULL
-    names(xx) <- c('id', 'viajes',  'lat', 'long')
-    pal <- colorNumeric(
-      palette = "YlGnBu",
-      domain = xx$viajes)
-    #xx$viajes <- (xx$viajes -min(xx$viajes))/(max(xx$viajes)-min(xx$viajes)) 
-    # Show first 20 rows from the `quakes` dataset
-    leaflet(data = xx) %>% addTiles() %>%
-      addCircles(~long, ~lat,  ~viajes/400, 
-                 label = ~as.character(id), opacity = .7, fillOpacity = 0.7, color='purple')
-  })
- 
-  
+      puntos.mapa
+       })
+
+
   #construccion serie total
   output$serie_diaria <- renderPlotly({
     serie_diaria
@@ -106,33 +96,33 @@ server <- function(input, output) {
   output$Cluster_temporal <- renderPlotly({
     Cluster_temporal
   })
- 
+
   # giff
-  output$plot1 <- renderImage({
+  #output$plot1 <- renderImage({
     # A temp file to save the output.
     # This file will be removed later by renderImage
-    outfile <- imager::load.image('example_1.gif')
-    
+   # outfile <- imager::load.image('example_1.gif')
+
     # now make the animation
-    play(outfile)
-  })
-  
-  
-  
+    #play(outfile)
+  #})
+
+
+
   #construccion de densidades del tab DWD
   output$Bayes <- renderPlotly({
     a <- a()
     proyec <- a[[1]]
     p2 <- ggplot(data = proyec, aes(x=V3, fill=label, colour=label))+geom_density()+
       geom_rug(sides="b")+ggtitle('Distribución en la dirección de Bayes') + theme_minimal()+
-      xlab('Bayes') + ylab('') + 
+      xlab('Bayes') + ylab('') +
       scale_fill_manual(  labels = c('-1', '+1'), values = c("purple", "orange"))+
       scale_color_manual(  labels = c('-1', '+1'), values = c("purple", "orange"))+
       theme(legend.title = element_blank())
     p2 <- ggplotly(p2) #distro en bayes
     p2
   })
-  
+
   #construccion de proyecciones del tab DWD
   output$DWD <- renderPlotly({
     a <- a()
@@ -150,6 +140,6 @@ server <- function(input, output) {
       layout(title = "Distancia a hiperplano MDP",
              xaxis = list(title = ' '),
                           yaxis = list(title = ''))
-    
+
   })
 }
